@@ -3,6 +3,7 @@ from django.utils import timezone
 from datetime import timedelta
 from rest_framework import serializers
 from .models import User
+from .utils import send_verification_email
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
@@ -28,4 +29,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.verification_token = secrets.token_urlsafe(32)
         user.token_expiry = timezone.now() + timedelta(hours=24)
         user.save()
+        send_verification_email(user)
         return user
