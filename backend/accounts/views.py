@@ -1,7 +1,9 @@
 from rest_framework import status 
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import RegisterSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.throttling import AnonRateThrottle
+from .serializers import RegisterSerializer, LoginSerializer
 from django.utils import timezone
 from .models import User
 
@@ -48,3 +50,21 @@ class VerifyEmailView(APIView):
             {"message": "Email verified successfully. You can now log in."},
             status=status.HTTP_200_OK
         )
+    
+class LoginView(APIView):
+    throttle_classes = [AnonRateThrottle
+                        ]
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                    "user": {"id": user.id, "email": user.email}
+                },
+                status=status.HTTP_200_OK
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -4,6 +4,7 @@ from datetime import timedelta
 from rest_framework import serializers
 from .models import User
 from .utils import send_verification_email
+from django.contrib.auth import authenticate
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
@@ -31,3 +32,19 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
         send_verification_email(user)
         return user
+    
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        user = authenticate(email=data['email'], password=data['password'])
+
+        if user is None:
+            raise serializers.ValidationError("Invalid email or password.")
+
+        if not user.is_verified:
+            raise serializers.ValidationError("Invalid email or password.")
+
+        data['user'] = user
+        return data
