@@ -24,6 +24,9 @@ class User(AbstractUser):
     is_verified = models.BooleanField(default=False)
     verification_token = models.CharField(max_length=255, blank=True, null=True)
     token_expiry = models.DateTimeField(blank=True, null=True)
+    
+    password_reset_token = models.CharField(max_length=255, blank=True, null=True)
+    reset_token_expiry = models.DateTimeField(blank=True, null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

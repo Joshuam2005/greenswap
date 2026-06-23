@@ -17,3 +17,21 @@ def send_verification_email(user):
         [user.email],
         fail_silently=False,
     )
+
+def send_password_reset_email(user):
+    reset_link = f"{settings.FRONTEND_URL}/reset-password?token={user.password_reset_token}"
+    subject = "Reset your GreenSwap password"
+    message = (
+        f"We received a request to reset your GreenSwap password.\n\n"
+        f"Click the link below to set a new password:\n\n"
+        f"{reset_link}\n\n"
+        f"This link will expire in one hour "
+        f"If you didn't request this, you can safely ignore this email."
+    )
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [user.email],
+        fail_silently=False,
+    )
