@@ -28,6 +28,10 @@ class User(AbstractUser):
     password_reset_token = models.CharField(max_length=255, blank=True, null=True)
     reset_token_expiry = models.DateTimeField(blank=True, null=True)
 
+    display_name = models.CharField(max_length=100, blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    profile_picture_url = models.CharField(max_length=500, blank=True, null=True)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
