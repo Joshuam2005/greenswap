@@ -48,3 +48,11 @@ class LoginSerializer(serializers.Serializer):
 
         data['user'] = user
         return data
+    
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'email', 'display_name', 'bio', 'profile_picture_url', 'is_verified']
+        read_only_fields = ['id', 'email', 'is_verified']
+
+        
