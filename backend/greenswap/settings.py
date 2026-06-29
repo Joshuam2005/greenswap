@@ -144,3 +144,6 @@ REST_FRAMEWORK = {
         'anon': '5/minute',
     },
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

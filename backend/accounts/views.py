@@ -1,15 +1,19 @@
+import os
 from rest_framework import status 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.throttling import AnonRateThrottle
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from .serializers import RegisterSerializer, LoginSerializer, ProfileSerializer
 from django.utils import timezone
+from django.conf import settings
 from .models import User
 from .utils import send_password_reset_email
 import secrets
 from datetime import timedelta
+from PIL import Image
 
 
 class RegisterView(APIView):
@@ -150,4 +154,58 @@ class ProfileView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class ProfilePictureUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request):
+        file = request.FILES.get('picture')
+
+        if not file:
+            return Response(
+                {"error": "No file uploaded"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if file.size > 5 * 1024 * 1024:
+            return Response(
+                {"error": "File too large. Max size is 5MB"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            image = Image.open(file)
+            image.verify()
+        except Exception:
+            return Response(
+                {"error": "Invalid image file."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if image.format not in ['JPEG', 'PNG', 'WEBP']:
+            return Response(
+                {"error": "Unsupported format. Use JPEG, PNG or WEBP"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        file.seek(0)
+        filename = f"profile_{request.user.id}_{file.name}"
+        path = os.path.join(settings.MEDIA_ROOT, filename)
+
+        os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+
+        with open(path, 'wb') as destination:
+            for chunk in file.chunks():
+                destination.write(chunk)
+
+
+        request.user.profile_picture_url = f"{settings.MEDIA_URL}{filename}"
+        request.user.save()
+
+        return Response(
+            {
+                "message": "Profile picture uploaded successfully.",
+                "profile_picture_url": request.user.profile_picture_url
+            },
+            status=status.HTTP_200_OK
+        )
     
