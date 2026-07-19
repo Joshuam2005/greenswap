@@ -1,26 +1,28 @@
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import About from "./pages/About.jsx"
 import Contact from "./pages/Contact.jsx"
+import Navbar from "./components/Navbar";
+import Marketplace from "./pages/Marketplace.jsx";
+import ListingDetails from "./pages/ListingDetails.jsx";
+import CreateListing from "./pages/CreateListing.jsx";
 
 function App() {
   return (
     <BrowserRouter>
-      <nav>
-        <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
-      </nav>
+      <Navbar />
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/listing/:id" element={<ListingDetails />} />
+        <Route path="/create-listing" element={<CreateListing />} />
       </Routes>
     </BrowserRouter>
   )
