@@ -1,8 +1,10 @@
 import {useState} from "react";
+import { useNavigate } from "react-router-dom";
 function Login() {
 
     const [email, setEmail]= useState("");
     const [password, setPassword]= useState("");
+    const navigate = useNavigate();
     async function handleLogin() {
     console.log("button clicked");
     console.log("sending:", email, password);
@@ -17,8 +19,15 @@ function Login() {
         }),
     });
 
+    
     const data = await response.json();
-    console.log(data);
+
+if (response.ok) {
+   if (response.ok) {
+    console.log("Login successful!");
+    navigate("/");
+}
+}
 }
 
     return (
@@ -34,7 +43,7 @@ function Login() {
              />
             <button onClick={handleLogin}>Login</button>
             <p>Email state: {email}</p>
-            <p>Password state: {password}</p>
+            
            
 
         </div>
