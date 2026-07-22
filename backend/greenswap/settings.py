@@ -135,9 +135,9 @@ STATIC_URL = 'static/'
 
 AUTH_USER_MODEL = 'accounts.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'noreply@greenswap.com'
-FRONTEND_URL = 'http://localhost:3000'
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = "noreply@greenswap.com"
+FRONTEND_URL = "http://localhost:5173"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

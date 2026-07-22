@@ -9,6 +9,7 @@ import Navbar from "./components/Navbar";
 import Marketplace from "./pages/Marketplace.jsx";
 import ListingDetails from "./pages/ListingDetails.jsx";
 import CreateListing from "./pages/CreateListing.jsx";
+import Register from "./pages/Register";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/listing/:id" element={<ListingDetails />} />
         <Route path="/create-listing" element={<CreateListing />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </BrowserRouter>
   )
