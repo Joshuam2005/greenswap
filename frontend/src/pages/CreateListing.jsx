@@ -13,23 +13,32 @@ function CreateListing() {
     const [imageName, setImageName] = useState("");
 
     function handleSubmit(e) {
-        e.preventDefault();
+    e.preventDefault();
 
-        const newListing = {
-            title,
-            price,
-            category,
-            seller,
-            description,
-            imageName,
-        };
+    const newListing = {
+        id: Date.now(),
+        title,
+        price: Number(price),
+        category,
+        seller,
+        description,
+        imageName,
+    };
 
-        console.log("New listing:", newListing);
+    const savedListings =
+        JSON.parse(localStorage.getItem("listings")) || [];
 
-        alert("Listing created for now!");
+    const updatedListings = [...savedListings, newListing];
 
-        navigate("/marketplace");
-    }
+    localStorage.setItem(
+        "listings",
+        JSON.stringify(updatedListings)
+    );
+
+    alert("Listing created!");
+
+    navigate("/marketplace");
+}
 
     return (
         <main className="create-listing-page">
