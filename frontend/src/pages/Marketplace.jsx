@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Marketplace.css";
-import listings from "../data/listings";
+import mockListings from "../data/listings";
 
 function Marketplace() {
     
@@ -9,6 +9,10 @@ function Marketplace() {
 
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const savedListings =
+    JSON.parse(localStorage.getItem("listings")) || [];
+
+    const listings = [...mockListings, ...savedListings];
 
     const filteredListings = listings.filter((listing) => {
         const matchesSearch = listing.title
