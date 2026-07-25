@@ -1,94 +1,80 @@
 .create-listing-page {
-    min-height: 100vh;
+    min-height: calc(100vh - 80px);
+    background-color: #f5f7f5;
     padding: 50px 20px;
-    background-color: #f7faf8;
-    font-family: Arial, sans-serif;
 }
 
 .create-listing-card {
-    max-width: 700px;
+    max-width: 650px;
     margin: 0 auto;
-    padding: 40px;
     background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
 }
 
 .create-listing-card h1 {
-    margin: 0 0 10px;
-    color: #1f3b23;
-    font-size: 38px;
+    margin: 0;
     text-align: center;
+    font-size: 42px;
 }
 
-.create-listing-intro {
+.create-listing-subtitle {
+    text-align: center;
+    color: #666;
     margin-bottom: 30px;
-    color: #68766a;
-    text-align: center;
 }
 
-.form-group {
+.create-listing-form {
     display: flex;
     flex-direction: column;
-    margin-bottom: 22px;
+    gap: 20px;
 }
 
-.form-group label {
-    margin-bottom: 8px;
-    color: #1f3b23;
-    font-weight: bold;
+.create-listing-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 600;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    box-sizing: border-box;
+.create-listing-form input,
+.create-listing-form textarea,
+.create-listing-form select {
     width: 100%;
-    padding: 13px;
-    border: 1px solid #bdcbbf;
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
     font-size: 16px;
 }
 
-.form-group textarea {
+.create-listing-form textarea {
+    min-height: 120px;
     resize: vertical;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #2e7d32;
-    outline: none;
-}
-
-.selected-image {
-    margin: 8px 0 0;
-    color: #68766a;
-    font-size: 14px;
-}
-
-.submit-listing-button {
-    width: 100%;
-    padding: 14px;
+.create-listing-form button {
+    padding: 13px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     background-color: #2e7d32;
     color: white;
     font-size: 17px;
     cursor: pointer;
 }
 
-.submit-listing-button:hover {
+.create-listing-form button:hover {
     background-color: #256628;
 }
 
-@media (max-width: 600px) {
-    .create-listing-card {
-        padding: 28px 20px;
-    }
+.create-listing-form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 
-    .create-listing-card h1 {
-        font-size: 31px;
-    }
+.create-listing-message {
+    margin-top: 20px;
+    text-align: center;
+    color: #b00020;
 }
