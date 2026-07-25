@@ -1,8 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
-    const isLoggedIn = !!localStorage.getItem("accessToken");
+    const location = useLocation();
+
+    const isLoggedIn = Boolean(
+        localStorage.getItem("accessToken")
+    );
 
     return (
         <nav className="navbar">
@@ -10,16 +14,29 @@ function Navbar() {
 
             <div className="nav-links">
                 <Link to="/">Home</Link>
-                <Link to="/marketplace">Marketplace</Link>
+
+                {isLoggedIn && (
+                    <Link to="/marketplace">
+                        Marketplace
+                    </Link>
+                )}
+
                 <Link to="/about">About</Link>
                 <Link to="/contact">Contact</Link>
 
                 {isLoggedIn ? (
-                    <Link to="/profile">Profile</Link>
+                    <Link to="/profile">
+                        Profile
+                    </Link>
                 ) : (
                     <>
-                        <Link to="/login">Login</Link>
-                        <Link to="/register">Register</Link>
+                        <Link to="/login">
+                            Login
+                        </Link>
+
+                        <Link to="/register">
+                            Register
+                        </Link>
                     </>
                 )}
             </div>
