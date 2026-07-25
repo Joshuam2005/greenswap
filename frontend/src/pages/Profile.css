@@ -362,3 +362,63 @@
         width: 100%;
     }
 }
+.profile-listing-image {
+    position: relative;
+}
+
+.profile-sold-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    padding: 8px 14px;
+    border-radius: 7px;
+    background-color: #c62828;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.profile-listing-sold .profile-listing-image img {
+    filter: grayscale(60%);
+    opacity: 0.75;
+}
+
+.listing-status {
+    margin: 10px 0 0;
+    font-weight: bold;
+}
+
+.listing-status-available {
+    color: #2e7d32;
+}
+
+.listing-status-sold {
+    color: #c62828;
+}
+
+.profile-sold-button,
+.profile-available-button {
+    color: white;
+}
+
+.profile-sold-button {
+    background-color: #c62828;
+}
+
+.profile-sold-button:hover {
+    background-color: #a51f1f;
+}
+
+.profile-available-button {
+    background-color: #2e7d32;
+}
+
+.profile-available-button:hover {
+    background-color: #256628;
+}
+
+.profile-listing-actions button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

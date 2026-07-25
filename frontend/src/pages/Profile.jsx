@@ -15,12 +15,19 @@ function Profile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const [selectedPicture, setSelectedPicture] = useState(null);
-    const [uploadingPicture, setUploadingPicture] = useState(false);
+    const [selectedPicture, setSelectedPicture] =
+        useState(null);
+
+    const [uploadingPicture, setUploadingPicture] =
+        useState(false);
+
+    const [updatingListingId, setUpdatingListingId] =
+        useState(null);
 
     useEffect(() => {
         async function loadProfilePage() {
-            const accessToken = localStorage.getItem("accessToken");
+            const accessToken =
+                localStorage.getItem("accessToken");
 
             if (!accessToken) {
                 navigate("/login");
@@ -50,11 +57,21 @@ function Profile() {
                     return;
                 }
 
-                const profileData = await profileResponse.json();
-                const listingsData = await listingsResponse.json();
+                const profileData =
+                    await profileResponse.json();
 
-                console.log("Profile data:", profileData);
-                console.log("User listings:", listingsData);
+                const listingsData =
+                    await listingsResponse.json();
+
+                console.log(
+                    "Profile data:",
+                    profileData
+                );
+
+                console.log(
+                    "User listings:",
+                    listingsData
+                );
 
                 if (!profileResponse.ok) {
                     throw new Error(
@@ -80,7 +97,11 @@ function Profile() {
                         : listingsData.results || []
                 );
             } catch (error) {
-                console.error("Profile page error:", error);
+                console.error(
+                    "Profile page error:",
+                    error
+                );
+
                 setError(error.message);
             } finally {
                 setLoading(false);
@@ -92,8 +113,8 @@ function Profile() {
 
     function handleLogout() {
         clearLoginInformation();
-    navigate("/");
-    window.location.reload();
+        navigate("/");
+        window.location.reload();
     }
 
     function handlePictureSelection(event) {
@@ -110,20 +131,32 @@ function Profile() {
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            alert("Please choose a JPEG, PNG, or WEBP image.");
+            alert(
+                "Please choose a JPEG, PNG, or WEBP image."
+            );
 
             event.target.value = "";
             return;
         }
 
         if (file.size > 5 * 1024 * 1024) {
-            alert("The image must be smaller than 5MB.");
+            alert(
+                "The image must be smaller than 5MB."
+            );
 
             event.target.value = "";
             return;
         }
 
         setSelectedPicture(file);
+    }
+
+    function cancelPictureSelection() {
+        setSelectedPicture(null);
+
+        if (pictureInputRef.current) {
+            pictureInputRef.current.value = "";
+        }
     }
 
     async function handleProfilePictureUpload() {
@@ -134,7 +167,10 @@ function Profile() {
 
         const formData = new FormData();
 
-        formData.append("picture", selectedPicture);
+        formData.append(
+            "picture",
+            selectedPicture
+        );
 
         setUploadingPicture(true);
 
@@ -172,14 +208,11 @@ function Profile() {
 
             setProfile((currentProfile) => ({
                 ...currentProfile,
-                profile_picture_url: data.profile_picture_url,
+                profile_picture_url:
+                    data.profile_picture_url,
             }));
 
-            setSelectedPicture(null);
-
-            if (pictureInputRef.current) {
-                pictureInputRef.current.value = "";
-            }
+            cancelPictureSelection();
 
             alert("Profile picture updated.");
         } catch (error) {
@@ -188,9 +221,100 @@ function Profile() {
                 error
             );
 
-            alert("Could not connect to the backend.");
+            alert(
+                "Could not connect to the backend."
+            );
         } finally {
             setUploadingPicture(false);
+        }
+    }
+
+    async function handleSoldStatus(listing) {
+        const newSoldStatus = !listing.is_sold;
+
+        const confirmationMessage = newSoldStatus
+            ? `Mark "${listing.title}" as sold?`
+            : `Mark "${listing.title}" as available again?`;
+
+        const shouldUpdate = window.confirm(
+            confirmationMessage
+        );
+
+        if (!shouldUpdate) {
+            return;
+        }
+
+        setUpdatingListingId(listing.id);
+
+        try {
+            const response = await apiFetch(
+                `http://localhost:8000/api/listings/${listing.id}/`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+                    },
+                    body: JSON.stringify({
+                        is_sold: newSoldStatus,
+                    }),
+                }
+            );
+
+            let data = {};
+
+            try {
+                data = await response.json();
+            } catch {
+                // The backend returned no JSON.
+            }
+
+            if (response.status === 401) {
+                handleLogout();
+                return;
+            }
+
+            if (!response.ok) {
+                alert(
+                    data.error ||
+                        data.detail ||
+                        "Could not update the listing."
+                );
+
+                return;
+            }
+
+            setListings((currentListings) =>
+                currentListings.map(
+                    (currentListing) =>
+                        currentListing.id ===
+                        listing.id
+                            ? {
+                                  ...currentListing,
+                                  ...data,
+                                  is_sold:
+                                      newSoldStatus,
+                              }
+                            : currentListing
+                )
+            );
+
+            alert(
+                newSoldStatus
+                    ? "Listing marked as sold."
+                    : "Listing marked as available."
+            );
+        } catch (error) {
+            console.error(
+                "Sold status update error:",
+                error
+            );
+
+            alert(
+                "Could not connect to the backend."
+            );
+        } finally {
+            setUpdatingListingId(null);
         }
     }
 
@@ -236,14 +360,23 @@ function Profile() {
 
             setListings((currentListings) =>
                 currentListings.filter(
-                    (listing) => listing.id !== listingId
+                    (listing) =>
+                        listing.id !== listingId
                 )
             );
 
-            alert("Listing deleted successfully.");
+            alert(
+                "Listing deleted successfully."
+            );
         } catch (error) {
-            console.error("Delete error:", error);
-            alert("Could not connect to the backend.");
+            console.error(
+                "Delete error:",
+                error
+            );
+
+            alert(
+                "Could not connect to the backend."
+            );
         }
     }
 
@@ -267,11 +400,14 @@ function Profile() {
         return null;
     }
 
-    const profilePicture = profile.profile_picture_url
-        ? profile.profile_picture_url.startsWith("http")
-            ? profile.profile_picture_url
-            : `http://localhost:8000${profile.profile_picture_url}`
-        : null;
+    const profilePicture =
+        profile.profile_picture_url
+            ? profile.profile_picture_url.startsWith(
+                  "http"
+              )
+                ? profile.profile_picture_url
+                : `http://localhost:8000${profile.profile_picture_url}`
+            : null;
 
     return (
         <main className="profile-page">
@@ -310,19 +446,25 @@ function Profile() {
                         type="file"
                         accept="image/jpeg,image/png,image/webp"
                         className="hidden-profile-picture-input"
-                        onChange={handlePictureSelection}
+                        onChange={
+                            handlePictureSelection
+                        }
                     />
 
                     {selectedPicture && (
                         <div className="selected-picture-actions">
                             <p className="selected-picture-name">
-                                {selectedPicture.name}
+                                {
+                                    selectedPicture.name
+                                }
                             </p>
 
                             <button
                                 type="button"
                                 className="upload-selected-picture-button"
-                                disabled={uploadingPicture}
+                                disabled={
+                                    uploadingPicture
+                                }
                                 onClick={
                                     handleProfilePictureUpload
                                 }
@@ -335,17 +477,12 @@ function Profile() {
                             <button
                                 type="button"
                                 className="cancel-picture-button"
-                                disabled={uploadingPicture}
-                                onClick={() => {
-                                    setSelectedPicture(null);
-
-                                    if (
-                                        pictureInputRef.current
-                                    ) {
-                                        pictureInputRef.current.value =
-                                            "";
-                                    }
-                                }}
+                                disabled={
+                                    uploadingPicture
+                                }
+                                onClick={
+                                    cancelPictureSelection
+                                }
                             >
                                 Cancel
                             </button>
@@ -357,8 +494,12 @@ function Profile() {
                     <h1>
                         {profile.first_name ||
                         profile.last_name
-                            ? `${profile.first_name || ""} ${
-                                  profile.last_name || ""
+                            ? `${
+                                  profile.first_name ||
+                                  ""
+                              } ${
+                                  profile.last_name ||
+                                  ""
                               }`
                             : "GreenSwap User"}
                     </h1>
@@ -366,7 +507,8 @@ function Profile() {
                     <p>{profile.email}</p>
 
                     <p className="profile-picture-help">
-                        Click your profile picture to change it.
+                        Click your profile picture
+                        to change it.
                     </p>
                 </div>
 
@@ -394,8 +536,8 @@ function Profile() {
                         <h2>My Listings</h2>
 
                         <p>
-                            View and manage the items you have
-                            posted.
+                            View and manage the items
+                            you have posted.
                         </p>
                     </div>
 
@@ -409,11 +551,13 @@ function Profile() {
 
                 {listings.length === 0 ? (
                     <div className="profile-empty-listings">
-                        <h3>You have no listings yet.</h3>
+                        <h3>
+                            You have no listings yet.
+                        </h3>
 
                         <p>
-                            Create your first listing to start
-                            selling.
+                            Create your first listing
+                            to start selling.
                         </p>
 
                         <Link
@@ -425,80 +569,153 @@ function Profile() {
                     </div>
                 ) : (
                     <div className="profile-listings-grid">
-                        {listings.map((listing) => {
-                            const imageUrl = listing.image
-                                ? listing.image.startsWith(
-                                      "http"
-                                  )
-                                    ? listing.image
-                                    : `http://localhost:8000${listing.image}`
-                                : null;
+                        {listings.map(
+                            (listing) => {
+                                const imageUrl =
+                                    listing.image
+                                        ? listing.image.startsWith(
+                                              "http"
+                                          )
+                                            ? listing.image
+                                            : `http://localhost:8000${listing.image}`
+                                        : null;
 
-                            return (
-                                <article
-                                    className="profile-listing-card"
-                                    key={listing.id}
-                                >
-                                    <div className="profile-listing-image">
-                                        {imageUrl ? (
-                                            <img
-                                                src={imageUrl}
-                                                alt={
+                                const isUpdating =
+                                    updatingListingId ===
+                                    listing.id;
+
+                                return (
+                                    <article
+                                        className={`profile-listing-card ${
+                                            listing.is_sold
+                                                ? "profile-listing-sold"
+                                                : ""
+                                        }`}
+                                        key={
+                                            listing.id
+                                        }
+                                    >
+                                        <div className="profile-listing-image">
+                                            {imageUrl ? (
+                                                <img
+                                                    src={
+                                                        imageUrl
+                                                    }
+                                                    alt={
+                                                        listing.title
+                                                    }
+                                                />
+                                            ) : (
+                                                <p>
+                                                    No
+                                                    image
+                                                </p>
+                                            )}
+
+                                            {listing.is_sold && (
+                                                <div className="profile-sold-badge">
+                                                    SOLD
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="profile-listing-info">
+                                            <p className="profile-listing-category">
+                                                {
+                                                    listing.category
+                                                }
+                                            </p>
+
+                                            <h3>
+                                                {
                                                     listing.title
                                                 }
-                                            />
-                                        ) : (
-                                            <p>No image</p>
-                                        )}
-                                    </div>
+                                            </h3>
 
-                                    <div className="profile-listing-info">
-                                        <p className="profile-listing-category">
-                                            {listing.category}
-                                        </p>
+                                            <p className="profile-listing-price">
+                                                $
+                                                {
+                                                    listing.price
+                                                }
+                                            </p>
 
-                                        <h3>{listing.title}</h3>
+                                            <p>
+                                                Condition:{" "}
+                                                {
+                                                    listing.condition
+                                                }
+                                            </p>
 
-                                        <p className="profile-listing-price">
-                                            ${listing.price}
-                                        </p>
-
-                                        <p>
-                                            Condition:{" "}
-                                            {listing.condition}
-                                        </p>
-
-                                        <div className="profile-listing-actions">
-                                            <Link
-                                                to={`/listing/${listing.id}`}
-                                                className="profile-view-button"
-                                            >
-                                                View
-                                            </Link>
-
-                                            <Link
-                                                to={`/edit-listing/${listing.id}`}
-                                                className="profile-edit-button"
-                                            >
-                                                Edit
-                                            </Link>
-
-                                            <button
-                                                type="button"
-                                                className="profile-delete-button"
-                                                onClick={() =>
-                                                    handleDelete(
-                                                        listing.id
-                                                    )
+                                            <p
+                                                className={
+                                                    listing.is_sold
+                                                        ? "listing-status listing-status-sold"
+                                                        : "listing-status listing-status-available"
                                                 }
                                             >
-                                                Delete
-                                            </button>
+                                                {listing.is_sold
+                                                    ? "Status: Sold"
+                                                    : "Status: Available"}
+                                            </p>
+
+                                            <div className="profile-listing-actions">
+                                                <Link
+                                                    to={`/listing/${listing.id}`}
+                                                    className="profile-view-button"
+                                                >
+                                                    View
+                                                </Link>
+
+                                                <Link
+                                                    to={`/edit-listing/${listing.id}`}
+                                                    className="profile-edit-button"
+                                                >
+                                                    Edit
+                                                </Link>
+
+                                                <button
+                                                    type="button"
+                                                    className={
+                                                        listing.is_sold
+                                                            ? "profile-available-button"
+                                                            : "profile-sold-button"
+                                                    }
+                                                    disabled={
+                                                        isUpdating
+                                                    }
+                                                    onClick={() =>
+                                                        handleSoldStatus(
+                                                            listing
+                                                        )
+                                                    }
+                                                >
+                                                    {isUpdating
+                                                        ? "Updating..."
+                                                        : listing.is_sold
+                                                          ? "Mark Available"
+                                                          : "Mark Sold"}
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="profile-delete-button"
+                                                    disabled={
+                                                        isUpdating
+                                                    }
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            listing.id
+                                                        )
+                                                    }
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                </article>
-                            );
-                        })}
+                                    </article>
+                                );
+                            }
+                        )}
                     </div>
                 )}
             </section>
