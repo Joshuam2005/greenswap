@@ -6,146 +6,184 @@ function CreateListing() {
     const navigate = useNavigate();
 
     const [title, setTitle] = useState("");
-    const [price, setPrice] = useState("");
-    const [category, setCategory] = useState("Textbooks");
-    const [seller, setSeller] = useState("");
     const [description, setDescription] = useState("");
-    const [imageName, setImageName] = useState("");
+    const [category, setCategory] = useState("");
+    const [condition, setCondition] = useState("");
+    const [price, setPrice] = useState("");
+    const [image, setImage] = useState(null);
+    const [message, setMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    function handleSubmit(e) {
-    e.preventDefault();
+    async function handleSubmit(event) {
+        event.preventDefault();
 
-    const newListing = {
-        id: Date.now(),
-        title,
-        price: Number(price),
-        category,
-        seller,
-        description,
-        imageName,
-    };
+        const accessToken = localStorage.getItem("accessToken");
 
-    const savedListings =
-        JSON.parse(localStorage.getItem("listings")) || [];
+        if (!accessToken) {
+            alert("You must be logged in to create a listing.");
+            navigate("/login");
+            return;
+        }
 
-    const updatedListings = [...savedListings, newListing];
+        const formData = new FormData();
 
-    localStorage.setItem(
-        "listings",
-        JSON.stringify(updatedListings)
-    );
+        formData.append("title", title);
+        formData.append("description", description);
+        formData.append("category", category);
+        formData.append("condition", condition);
+        formData.append("price", price);
 
-    alert("Listing created!");
+        if (image) {
+            formData.append("image", image);
+        }
 
-    navigate("/marketplace");
-}
+        try {
+            setIsSubmitting(true);
+            setMessage("");
+
+            const response = await fetch(
+                "http://localhost:8000/api/listings/create/",
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                    body: formData,
+                }
+            );
+
+            const data = await response.json();
+
+            console.log("Create listing response:", data);
+
+            if (response.ok) {
+                alert("Listing created successfully!");
+                navigate("/marketplace");
+            } else {
+                setMessage(
+                    data.detail ||
+                    data.title?.[0] ||
+                    data.description?.[0] ||
+                    data.category?.[0] ||
+                    data.condition?.[0] ||
+                    data.price?.[0] ||
+                    data.image?.[0] ||
+                    "Could not create listing."
+                );
+            }
+        } catch (error) {
+            console.error("Create listing error:", error);
+            setMessage("Could not connect to the backend.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     return (
-        <main className="create-listing-page">
-            <section className="create-listing-card">
-                <h1>Create a Listing</h1>
+    <main className="create-listing-page">
+        <section className="create-listing-card">
+            <h1>Create Listing</h1>
+            <p className="create-listing-subtitle">
+                Add an item to the GreenSwap marketplace.
+            </p>
 
-                <p className="create-listing-intro">
-                    Add information about the item you want to sell.
-                </p>
+            <form className="create-listing-form" onSubmit={handleSubmit}>
+                <label>
+                    Title
+                    <input
+                        type="text"
+                        placeholder="What are you selling?"
+                        value={title}
+                        onChange={(event) => setTitle(event.target.value)}
+                        required
+                    />
+                </label>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="title">Item title</label>
+                <label>
+                    Description
+                    <textarea
+                        placeholder="Describe the item"
+                        value={description}
+                        onChange={(event) =>
+                            setDescription(event.target.value)
+                        }
+                        required
+                    />
+                </label>
 
-                        <input
-                            id="title"
-                            type="text"
-                            placeholder="Example: MacBook Air"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            required
-                        />
-                    </div>
+                <label>
+                    Category
+                    <select
+                        value={category}
+                        onChange={(event) =>
+                            setCategory(event.target.value)
+                        }
+                        required
+                    >
+                        <option value="">Select a category</option>
+                        <option value="Textbooks">Textbooks</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Furniture">Furniture</option>
+                        <option value="Clothing">Clothing</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </label>
 
-                    <div className="form-group">
-                        <label htmlFor="price">Price</label>
+                <label>
+                    Condition
+                    <select
+                        value={condition}
+                        onChange={(event) =>
+                            setCondition(event.target.value)
+                        }
+                        required
+                    >
+                        <option value="">Select condition</option>
+                        <option value="New">New</option>
+                        <option value="Like New">Like New</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Poor">Poor</option>
+                    </select>
+                </label>
 
-                        <input
-                            id="price"
-                            type="number"
-                            min="0"
-                            step="0.01"
-                            placeholder="Example: 50"
-                            value={price}
-                            onChange={(e) => setPrice(e.target.value)}
-                            required
-                        />
-                    </div>
+                <label>
+                    Price
+                    <input
+                        type="number"
+                        placeholder="0.00"
+                        min="0"
+                        step="0.01"
+                        value={price}
+                        onChange={(event) =>
+                            setPrice(event.target.value)
+                        }
+                        required
+                    />
+                </label>
 
-                    <div className="form-group">
-                        <label htmlFor="category">Category</label>
+                <label>
+                    Image
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(event) =>
+                            setImage(event.target.files[0])
+                        }
+                    />
+                </label>
 
-                        <select
-                            id="category"
-                            value={category}
-                            onChange={(e) => setCategory(e.target.value)}
-                        >
-                            <option value="Textbooks">Textbooks</option>
-                            <option value="Electronics">Electronics</option>
-                            <option value="Furniture">Furniture</option>
-                            <option value="Clothing">Clothing</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
+                <button type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? "Creating..." : "Create Listing"}
+                </button>
+            </form>
 
-                    <div className="form-group">
-                        <label htmlFor="seller">Seller name</label>
-
-                        <input
-                            id="seller"
-                            type="text"
-                            placeholder="Your name"
-                            value={seller}
-                            onChange={(e) => setSeller(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="description">Description</label>
-
-                        <textarea
-                            id="description"
-                            rows="6"
-                            placeholder="Describe the condition, size, included accessories, or anything else buyers should know."
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="image">Item image</label>
-
-                        <input
-                            id="image"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) =>
-                                setImageName(e.target.files[0]?.name || "")
-                            }
-                        />
-
-                        {imageName && (
-                            <p className="selected-image">
-                                Selected: {imageName}
-                            </p>
-                        )}
-                    </div>
-
-                    <button type="submit" className="submit-listing-button">
-                        Post Listing
-                    </button>
-                </form>
-            </section>
-        </main>
-    );
+            {message && (
+                <p className="create-listing-message">{message}</p>
+            )}
+        </section>
+    </main>
+);
 }
 
 export default CreateListing;

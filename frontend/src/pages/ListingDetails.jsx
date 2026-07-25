@@ -1,37 +1,118 @@
-import { useParams, Link } from "react-router-dom";
-import listings from "../data/listings";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import "./ListingDetails.css";
 
 function ListingDetails() {
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    
+    const [listing, setListing] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    const listing = listings.find(
-        (item) => item.id === Number(id)
-    );
+    useEffect(() => {
+        async function getListing() {
+            const accessToken = localStorage.getItem("accessToken");
 
-    if (!listing) {
+            if (!accessToken) {
+                navigate("/login");
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `http://localhost:8000/api/listings/${id}/`,
+                    {
+                        method: "GET",
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
+
+                const data = await response.json();
+
+                console.log("Listing details:", data);
+
+                if (response.status === 401) {
+                    localStorage.removeItem("isLoggedIn");
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("refreshToken");
+
+                    navigate("/login");
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Could not load listing."
+                    );
+                }
+
+                setListing(data);
+            } catch (error) {
+                console.error("Listing details error:", error);
+                setError(error.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        getListing();
+    }, [id, navigate]);
+
+    if (loading) {
         return (
             <main className="listing-details-page">
-                <h1>Listing not found</h1>
-                <Link to="/marketplace">Back to Marketplace</Link>
+                <p>Loading listing...</p>
             </main>
         );
     }
 
+    if (error) {
+        return (
+            <main className="listing-details-page">
+                <p>{error}</p>
+
+                <Link to="/marketplace">
+                    Back to Marketplace
+                </Link>
+            </main>
+        );
+    }
+
+    if (!listing) {
+        return null;
+    }
+
+    const imageUrl = listing.image
+        ? listing.image.startsWith("http")
+            ? listing.image
+            : `http://localhost:8000${listing.image}`
+        : null;
+
     return (
         <main className="listing-details-page">
-            <Link to="/marketplace" className="back-link">
+            <Link
+                to="/marketplace"
+                className="back-button"
+            >
                 ← Back to Marketplace
             </Link>
 
-            <section className="listing-details-container">
-                <div className="details-image">
-                    Image
+            <section className="listing-details-card">
+                <div className="listing-details-image">
+                    {imageUrl ? (
+                        <img
+                            src={imageUrl}
+                            alt={listing.title}
+                        />
+                    ) : (
+                        <p>No image available</p>
+                    )}
                 </div>
 
-                <div className="details-content">
+                <div className="listing-details-info">
                     <p className="details-category">
                         {listing.category}
                     </p>
@@ -42,19 +123,33 @@ function ListingDetails() {
                         ${listing.price}
                     </p>
 
-                    <p className="details-seller">
-                        Sold by {listing.seller}
-                    </p>
+                    <div className="details-row">
+                        <strong>Condition:</strong>
+                        <span>{listing.condition}</span>
+                    </div>
 
-                    <h2>Description</h2>
+                    <div className="details-description">
+                        <h2>Description</h2>
+                        <p>{listing.description}</p>
+                    </div>
 
-                    <p className="details-description">
-                        {listing.description}
-                    </p>
+                    <div className="details-seller">
+                        <h2>Seller</h2>
 
-                    <button className="contact-button">
-                        Contact Seller
-                    </button>
+                        <p>
+                            {listing.seller_name ||
+                                listing.seller_email}
+                        </p>
+
+                        {listing.seller_email && (
+                            <a
+                                href={`mailto:${listing.seller_email}`}
+                                className="contact-seller-button"
+                            >
+                                Contact Seller
+                            </a>
+                        )}
+                    </div>
                 </div>
             </section>
         </main>

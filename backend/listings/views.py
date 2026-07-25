@@ -65,25 +65,74 @@ class ListingDetailView(APIView):
         except Listing.DoesNotExist:
             return None
 
+    def get(self, request, pk):
+        listing = self.get_object(pk)
+
+        if listing is None:
+            return Response(
+                {"error": "Listing not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = ListingBrowseSerializer(listing)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK
+        )
+
     def patch(self, request, pk):
         listing = self.get_object(pk)
-        if listing is None:
-            return Response({"error": "Listing not found."}, status=status.HTTP_404_NOT_FOUND)
-        if listing.seller != request.user:
-            return Response({"error": "You can only edit your own listings."}, status=status.HTTP_403_FORBIDDEN)
 
-        serializer = ListingSerializer(listing, data=request.data, partial=True)
+        if listing is None:
+            return Response(
+                {"error": "Listing not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        if listing.seller != request.user:
+            return Response(
+                {"error": "You can only edit your own listings."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        serializer = ListingSerializer(
+            listing,
+            data=request.data,
+            partial=True
+        )
+
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response(
+                serializer.data,
+                status=status.HTTP_200_OK
+            )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
     def delete(self, request, pk):
         listing = self.get_object(pk)
+
         if listing is None:
-            return Response({"error": "Listing not found."}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Listing not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
         if listing.seller != request.user:
-            return Response({"error": "You can only delete your own listings."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "You can only delete your own listings."},
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         listing.delete()
-        return Response({"message": "Listing deleted."}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response(
+            {"message": "Listing deleted successfully."},
+            status=status.HTTP_200_OK
+        )
