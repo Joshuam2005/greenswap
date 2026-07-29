@@ -54,6 +54,7 @@ Security was a core focus throughout the app's development, built into each deci
 - Postgre SQL
 
 ### Backend setup
+'''bash
 cd backend
 python3 - m venv venv
 source venv/bin/activate
@@ -61,3 +62,4 @@ pip install -r requirements.txt
 cp .env.example .env
 python manage.py migrate
 python manage.py runserver
+'''
