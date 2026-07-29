@@ -46,82 +46,18 @@ Security was a core focus throughout the app's development, built into each deci
 
 ---
 
-## Folder Structure
+## Getting Started
 
-```
-greenswap/
-├── frontend/        # React app
-├── backend/         # Django REST Framework API
-├── docs/            # Project documentation
-├── .gitignore
-└── README.md
-```
+## Prerequisites
+- Python 3.10+
+- Node.js 18+
+- Postgre SQL
 
----
-
-## Documentation
-
-All project documents are located in the `/docs` directory:
-
-- Software Requirements Specification (SRS)
-- UML Diagrams
-- Design Document
-- Testing Reports
-
----
-
-## Git Workflow
-
-### Rules
-- **Do not push directly to main**
-- All changes go through feature branches and pull requests
-- Always pull the latest changes before starting a new task
-
----
-
-### Starting a Task
-
-1. Pull the latest changes from main:
-```bash
-git checkout main
-git pull
-```
-
-2. Create a feature branch named after your task:
-```bash
-git checkout -b feature/task-name
-```
-
-**Branch naming examples:**
-- `feature/register-form`
-- `feature/login-endpoint`
-- `feature/profile-picture-upload`
-
----
-
-### Saving Your Work
-
-```bash
-git add .
-git commit -m "Your commit message here"
-git push -u origin feature/task-name
-```
-
-**Commit message examples:**
-- `Add registration form (React)`
-- `Fix expired token error on account activation`
-- `Linked registration form to backend API`
-
----
-
-### Finishing a Task
-
-1. Push your feature branch to GitHub
-2. Open a Pull Request from your feature branch into main
-3. Once checked, merge into main
-
----
-
-## License
-
-This project is developed for educational purposes as part of CSCE 3444 - Software Engineering at UNT.
+### Backend setup
+cd backend
+python3 - m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python manage.py migrate
+python manage.py runserver
