@@ -6,6 +6,21 @@ GreenSwap is a web based marketplace exclusively for the UNT community. Verified
 
 ---
 
+## Demo
+
+![Marketplace](screenshots/marketplace.png)
+*Browse and filter active listings*
+
+![Create Listing](screenshots/create-listing.png)
+*Post an item with photo, price, and condition*
+
+![Profile](screenshots/profile.png)
+*Manage your own listings — mark sold, relist, or delete*
+
+![Profile](screenshots/filter.png)
+*Filter listings based on category*
+
+---
 ## Overview
 
 Many students resort to Facebook Marketplace or other public platforms to buy and sell items. GreenSwap addresses this by providing a members-only marketplace restricted to solely verified UNT email holders, making every transaction safer and more trusted within the campus community.
