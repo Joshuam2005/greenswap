@@ -88,3 +88,19 @@ The frontend runs at `http://localhost:5173` and the backend API at `http://loca
 | `/api/listings/create/` | POST | Create a listing |
 | `/api/listings/<id>/` | PATCH/DELETE | Edit, mark sold, or delete (owner only) |
 | `/api/profile/listings/` | GET | View your own listings |
+
+---
+
+## Future plans
+
+- In-app buyer-seller messaging
+- Notifications
+- Admin moderation tools
+
+---
+
+## Author 
+
+Built by Joshua Moreno - [GitHub](https://github.com/Joshuam2005) 
+
+*Built as part of CSCE 3444 (Software Engineering) at the University Of North Texas.*
