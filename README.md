@@ -15,6 +15,11 @@ Many students resort to Facebook Marketplace or other public platforms to buy an
 ## Features
 
 - **UNT-verified registration**: accounts restricted to '@my.unt.edu'/'@unt.edu' emails
+- **JWT authentication**: token-based login with password reset
+- **Listings management**: create, edit, delete, and mark items as sold
+- **Browse, search & filter**: find listings by keyword, category, condition, and price range
+- **User profiles** - editable profiles with secure image upload
+- **Ownership-based authorization** - users can only modify their own listings
 
 ---
 
