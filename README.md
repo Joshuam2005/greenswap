@@ -75,7 +75,7 @@ The frontend runs at `http://localhost:5173` and the backend API at `http://loca
 
 ---
 
-## 📡 API Overview
+##  API Overview
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
