@@ -35,12 +35,14 @@ Security was a core focus throughout the app's development, built into each deci
 
 ---
 
-## Team
+## Tech Stack
 
-**Joshua Moreno**
-**Jeffrey Kachapilly** 
-**Tin Nguyen** 
-**Junior Cortina** 
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React (Vite) |
+| Backend | Django REST Framework |
+| Database | PostgreSQL |
+| Auth | JWT (djangorestframework-simplejwt) |
 
 ---
 
