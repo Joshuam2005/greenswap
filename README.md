@@ -54,12 +54,12 @@ Security was a core focus throughout the app's development, built into each deci
 - Postgre SQL
 
 ### Backend setup
-'''bash
+```bash
 cd backend
-python3 - m venv venv
+python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
+cp .env.example .env        # add your database credentials
 python manage.py migrate
 python manage.py runserver
-'''
+```
