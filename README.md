@@ -74,3 +74,17 @@ npm run dev
 The frontend runs at `http://localhost:5173` and the backend API at `http://localhost:8000`.
 
 ---
+
+## 📡 API Overview
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/register/` | POST | Register with a UNT email |
+| `/api/verify/` | GET | Verify email via token |
+| `/api/login/` | POST | Authenticate, receive JWT |
+| `/api/password-reset/` | POST | Request a password reset |
+| `/api/profile/` | GET/PATCH | View or edit profile |
+| `/api/listings/` | GET | Browse, search, and filter listings |
+| `/api/listings/create/` | POST | Create a listing |
+| `/api/listings/<id>/` | PATCH/DELETE | Edit, mark sold, or delete (owner only) |
+| `/api/profile/listings/` | GET | View your own listings |
