@@ -23,13 +23,15 @@ Many students resort to Facebook Marketplace or other public platforms to buy an
 
 ---
 
-## User Roles
+## Security 
+Security was a core focus throughout the app's development, built into each decision. 
 
-**Buyer** : Verified UNT user browsing listings, messaging sellers, and saving favorites.
-
-**Seller** : Verified UNT user posting items for sale, managing listings, and responding to buyers.
-
-**Admin** : Moderates listings, reviews reports, and suspends users.
+- **Authorization checks** - users can only edit or delete listings they own
+- **User enumeration defense** -login returns generic errors so attacks can't distinguish valid from invalid accounts
+- **Rate limiting** - login attempts are limited to defend against brute-force attacks
+- **Secure file uploads** - uploaded images are validated by actual file content (not just filename or extension), rejecting malicious files disguised.
+- **Password hashing** - passwords are hashed, never stored in plaintext
+- **Single-use, time-sensitive tokens** - email verification and password reset tokens are secure, single-use, and time-limited
 
 ---
 
