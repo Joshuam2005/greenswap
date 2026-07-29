@@ -24,7 +24,7 @@ Many students resort to Facebook Marketplace or other public platforms to buy an
 ---
 
 ## Security 
-Security was a core focus throughout the app's development, built into each decision. 
+Security was a core focus throughout the app's development, built into each decision: 
 
 - **Authorization checks** - users can only edit or delete listings they own
 - **User enumeration defense** -login returns generic errors so attacks can't distinguish valid from invalid accounts
