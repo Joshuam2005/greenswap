@@ -15,7 +15,7 @@ GreenSwap is a web based marketplace exclusively for the UNT community. Verified
 *Post an item with photo, price, and condition*
 
 ![Profile](screenshots/profile.png)
-*Manage your own listings — mark sold, relist, or delete*
+*Manage your own listings. Mark sold, relist, or delete*
 
 ![Profile](screenshots/filter.png)
 *Filter listings based on category*
