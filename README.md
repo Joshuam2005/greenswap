@@ -12,14 +12,6 @@ Many students resort to Facebook Marketplace or other public platforms to buy an
 
 ---
 
-## System Architecture
-
-```
-Web Browser -> React Frontend -> Django REST API -> PostgreSQL
-```
-
----
-
 ## Features
 
 **Marketplace**
