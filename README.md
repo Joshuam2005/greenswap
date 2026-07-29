@@ -63,3 +63,14 @@ cp .env.example .env        # add your database credentials
 python manage.py migrate
 python manage.py runserver
 ```
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs at `http://localhost:5173` and the backend API at `http://localhost:8000`.
+
+---
