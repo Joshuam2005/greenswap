@@ -14,26 +14,7 @@ Many students resort to Facebook Marketplace or other public platforms to buy an
 
 ## Features
 
-**Marketplace**
-- Post, edit, and delete item listings (textbooks, furniture, electronics, clothing, and more)
-- Browse and search listings by keyword, category, price, and condition
-- Mark items as sold
-
-**Authentication**
-- UNT email verification (@my.unt.edu for students / @unt.edu for staff) required to access our platform
-- Secure login, logout, and password reset
-
-**Messaging**
-- In-app messaging between buyers and sellers
-- Notifications for new messages and listing activity
-
-**User Profiles**
-- Editable profile with display name, bio, and profile picture
-- View your active and sold listings transacations
-
-**Admin**
-- Moderation tools to review reports and remove inappropriate listings
-- User suspension for policy violations
+- **UNT-verified registration**: accounts restricted to '@my.unt.edu'/'@unt.edu' emails
 
 ---
 
