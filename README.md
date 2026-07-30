@@ -97,12 +97,15 @@ The frontend runs at `http://localhost:5173` and the backend API at `http://loca
 | `/api/register/` | POST | Register with a UNT email |
 | `/api/verify/` | GET | Verify email via token |
 | `/api/login/` | POST | Authenticate, receive JWT |
+| `/api/token/refresh/` | POST | Refresh JWT access token |
 | `/api/password-reset/` | POST | Request a password reset |
+| `/api/password-reset/confirm/` | POST | Confirm password reset with token |
 | `/api/profile/` | GET/PATCH | View or edit profile |
+| `/api/profile/picture/` | POST | Upload profile picture |
+| `/api/profile/listings` | GET | View your own listings |
 | `/api/listings/` | GET | Browse, search, and filter listings |
 | `/api/listings/create/` | POST | Create a listing |
 | `/api/listings/<id>/` | PATCH/DELETE | Edit, mark sold, or delete (owner only) |
-| `/api/profile/listings/` | GET | View your own listings |
 
 ---
 
